@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respira Events Importer for Lu.ma</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .topbar {
+            background-color: #1a1a2e;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            height: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            font-family: 'Press Start 2P', monospace, system-ui;
+            font-size: 12px;
+            color: white;
+            position: relative;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .topbar-right {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+
+        .mac-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .mac-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .mac-dot-red {
+            background-color: #ff5f56;
+        }
+
+        .mac-dot-yellow {
+            background-color: #ffbd2e;
+        }
+
+        .mac-dot-green {
+            background-color: #27c93f;
+        }
+
+        .hub-title {
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            margin-bottom: 3rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .luma-logo {
+            height: 30px;
+            width: auto;
+            filter: brightness(0) invert(1); /* Make SVG logo white */
+        }
+
+        .title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-left: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #a0a0a0;
+            margin-top: 0.5rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #e0e0e0;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+
+        .form-input::placeholder {
+            color: #a0a0a0;
+        }
+
+        .url-hint {
+            font-size: 0.85rem;
+            color: #a0a0a0;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        .url-examples {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #a0a0a0;
+        }
+
+        .url-example {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-family: monospace;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+        }
+
+        .event-details {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .event-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            color: #e0e0e0;
+            word-break: break-word;
+        }
+
+        .event-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a0a0a0;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .close {
+            color: #a0a0a0;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #ffffff;
+        }
+
+        .confirmation-details {
+            margin-bottom: 2rem;
+        }
+
+        .confirmation-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .confirmation-item:last-child {
+            border-bottom: none;
+        }
+
+        .confirmation-label {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .confirmation-value {
+            color: #e0e0e0;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-word;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #667eea;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .title {
+                font-size: 1.8rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .event-info {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="mac-dots">
+                <div class="mac-dot mac-dot-red"></div>
+                <div class="mac-dot mac-dot-yellow"></div>
+                <div class="mac-dot mac-dot-green"></div>
+            </div>
+            <div class="hub-title">Respira Hub</div>
+        </div>
+        <div class="topbar-right">
+            Tools for creators and community builders
+        </div>
+    </div>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <img src="producedbyRespira.png" alt="Respira Logo" class="logo">
+                <div style="display: flex; align-items: center;">
+                    <span class="title">Respira Events Importer for</span>
+                    <a href="https://lu.ma/suuna" target="_blank">
+                        <svg class="luma-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 724 264" style="height: 30px; margin-left: 10px;">
+                            <g fill="currentColor">
+                                <path d="M38.53 260.65H.43V27.86h38.1zM124.99 263.42c-42.25 0-66.48-22.96-66.48-63V89.33h38.1v108.28c0 23.61 8.7 32.39 32.12 32.39 30.35 0 42.73-14.54 42.73-50.17v-90.5h38.1v171.33h-36.54v-29.91c-4.99 22.98-27.12 32.67-48.03 32.67m347.2-2.77H434.4V149.87c0-22.5-7.01-30.87-25.88-30.87-24.28 0-37.11 14.45-37.11 41.79v99.86h-37.79V149.87c0-21.93-7.23-30.87-24.94-30.87-31.59 0-38.05 32.96-38.05 41.79v99.86h-38.1V89.33h36.54v29.96c6.49-21.02 27.02-33.71 47.72-33.71 20.69 0 38.09 7.9 45.64 33.71 10.13-26.76 28.35-33.71 50.15-33.71 37.88 0 59.61 18.88 59.61 51.81zm76.65 2.77c-52.62 0-61.55-33.45-61.55-50.52 0-20.1 8.83-38.21 27.93-45.55 8.41-3.11 16.52-5.43 24.84-7.1 7.33-1.47 18.64-3.03 26.91-4.17l2.73-.38c14.38-2 29.67-9.21 29.67-18.62 0-16-20.51-18.39-32.74-18.39-13.87 0-23.64 3.57-27.53 10.05-3.49 6.46-3.73 7.97-4.62 13.6l-.62 4.43h-38.1l.68-5.61c1.35-11.14 3.41-19.03 6.48-24.83 10.54-20.39 31.77-30.75 63.08-30.75 26.11 0 44.63 8.23 53.26 15.94 5.31 4.6 9.1 9.84 11.89 16.46 5.84 12.36 6.32 20.63 6.32 29.4v86.43c0 8.07.78 14.97 2.31 20.5l1.76 6.35h-38.91l-.7-4.19c-.5-2.96-.67-19.75-.88-26.23-8.99 23.61-28.27 33.18-52.21 33.18m50.53-93.72c-7.97 6.11-20.47 9.6-38.62 13.23-31.27 5.78-36.54 13.06-36.54 27.22 0 12.5 10.63 20.26 27.75 20.26 33.23 0 47.41-15.48 47.41-51.77zM723.57 64.19C688.46 64.19 660 35.73 660 .62c0 35.11-28.46 63.57-63.57 63.57 35.11 0 63.57 28.46 63.57 63.57 0-35.11 28.46-63.57 63.57-63.57"></path>
+                            </g>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <p class="subtitle">Import Facebook events to Lu.ma with enhanced data extraction</p>
+        </div>
+
+        <!-- Configuration Section -->
+        <div class="card">
+            <h2 class="section-title">Configuration</h2>
+            <div class="form-group">
+                <label class="form-label" for="lumaApiKey">Lu.ma API Key</label>
+                <input type="password" id="lumaApiKey" class="form-input" placeholder="secret-xxxxxxxxxxxxx" value="secret-iU77ViGYOnsjkftWCgYU8AAqY">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="lumaCalendarId">Lu.ma Calendar ID</label>
+                <input type="text" id="lumaCalendarId" class="form-input" placeholder="cal-xxxxxxxxxxxxx" value="cal-kHPWgivduMfoD1j">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="hostName">Host Name</label>
+                <input type="text" id="hostName" class="form-input" placeholder="Your Name" value="RespiraLuma">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="hostEmail">Host Email</label>
+                <input type="email" id="hostEmail" class="form-input" placeholder="your@email.com" value="mihai@respira.cafe">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="hostBio">Host Bio</label>
+                <input type="text" id="hostBio" class="form-input" placeholder="Brief bio or description" value="Facebook Event importer to Lu.ma - created by Respira">
+            </div>
+        </div>
+
+        <!-- Import Events Section -->
+        <div class="card">
+            <h2 class="section-title">Import Events</h2>
+            <div class="form-group">
+                <label class="form-label" for="facebookUrl">Facebook URL</label>
+                <input type="url" id="facebookUrl" class="form-input" placeholder="https://www.facebook.com/events/123456789/">
+                <span class="url-hint">Enter a Facebook event URL or a Facebook page events section URL</span>
+                <div class="url-examples">
+                    <span class="url-example">https://www.facebook.com/events/737694142154147</span>
+                    <span class="url-example">https://www.facebook.com/centrulmulticultural/events</span>
+                </div>
+            </div>
+            <div class="button-group">
+                <button id="processBtn" class="btn btn-primary">Process URL</button>
+                <button id="clearBtn" class="btn btn-secondary">Clear Results</button>
+            </div>
+
+            <div id="alertContainer"></div>
+
+            <div id="eventDetails" class="event-details">
+                <h3 class="section-title">Facebook Event</h3>
+                <div id="eventImage"></div>
+                <div id="eventInfo" class="event-info"></div>
+                <button id="importBtn" class="btn btn-primary">Import to Lu.ma</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This app is not affiliated with Lu.ma but developed by <a href="https://respira.cafe" target="_blank">Respira</a> for its own community building projects.</p>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Import to Lu.ma</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="confirmation-details" id="confirmationDetails"></div>
+            <div class="button-group">
+                <button id="confirmImportBtn" class="btn btn-primary">Confirm Import</button>
+                <button id="cancelImportBtn" class="btn btn-secondary">Cancel</button>
+            </div>
+            <div id="loadingIndicator" class="loading">
+                <div class="spinner"></div>
+                <p>Creating event on Lu.ma...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentEventData = null;
+
+        document.getElementById('processBtn').addEventListener('click', processUrl);
+        document.getElementById('clearBtn').addEventListener('click', clearResults);
+        document.getElementById('importBtn').addEventListener('click', showConfirmationModal);
+        document.getElementById('confirmImportBtn').addEventListener('click', confirmImport);
+        document.getElementById('cancelImportBtn').addEventListener('click', hideConfirmationModal);
+        document.querySelector('.close').addEventListener('click', hideConfirmationModal);
+
+        async function processUrl() {
+            const url = document.getElementById('facebookUrl').value.trim();
+            if (!url) {
+                showAlert('Please enter a Facebook URL', 'error');
+                return;
+            }
+
+            const processBtn = document.getElementById('processBtn');
+            processBtn.disabled = true;
+            processBtn.textContent = 'Processing...';
+
+            try {
+                const response = await fetch('/facebook/scrape', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentEventData = data;
+                    displayEventData(data);
+                    showAlert('Successfully processed Facebook URL!', 'success');
+                } else {
+                    showAlert(data.error || 'Failed to process URL', 'error');
+                }
+            } catch (error) {
+                showAlert('Network error: ' + error.message, 'error');
+            } finally {
+                processBtn.disabled = false;
+                processBtn.textContent = 'Process URL';
+            }
+        }
+
+        function displayEventData(data) {
+            const eventDetails = document.getElementById('eventDetails');
+            const eventInfo = document.getElementById('eventInfo');
+            const eventImage = document.getElementById('eventImage');
+
+            // Display event image if available
+            if (data[0] && data[0].image_url) {
+                eventImage.innerHTML = `<img src="${data[0].image_url}" alt="Event Image" class="event-image">`;
+            } else {
+                eventImage.innerHTML = '';
+            }
+
+            // If multiple events were returned, show the first one but indicate there are more
+            if (data.length > 1) {
+                showAlert(`Found ${data.length} events. Showing the first event. Import will create all ${data.length} events.`, 'success');
+            }
+
+            // Get the first event for display
+            const event = data[0] || {};
+
+            // Display event information
+            const infoItems = [
+                { label: 'Title', value: event.title || 'No title found' },
+                { label: 'Description', value: event.description || 'No description found' },
+                { label: 'Date', value: event.date || 'No date found' },
+                { label: 'Time', value: event.time || 'No time found' },
+                { label: 'Location', value: event.location || 'No location found' },
+                { label: 'Organizer', value: event.organizer || 'No organizer found' },
+                { label: 'Ticket Link', value: event.ticket_link ? `<a href="${event.ticket_link}" target="_blank" style="color: #667eea;">${event.ticket_link}</a>` : 'No ticket link found' },
+                { label: 'URL', value: `<a href="${event.url}" target="_blank" style="color: #667eea;">${event.url}</a>` }
+            ];
+
+            eventInfo.innerHTML = infoItems.map(item => `
+                <div class="info-item">
+                    <div class="info-label">${item.label}:</div>
+                    <div class="info-value">${item.value}</div>
+                </div>
+            `).join('');
+
+            eventDetails.style.display = 'block';
+        }
+
+        async function showConfirmationModal() {
+ 
+(Content truncated due to size limit. Use line ranges to read in chunks)rrentEventData) {
+                showAlert('No event data to import', 'error');
+                return;
+            }
+
+            // Get calendar info
+            const lumaApiKey = document.getElementById('lumaApiKey').value.trim();
+            const lumaCalendarId = document.getElementById('lumaCalendarId').value.trim();
+
+            if (!lumaApiKey || !lumaCalendarId) {
+                showAlert('Please fill in Lu.ma API Key and Calendar ID', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/facebook/calendar_info', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        luma_api_key: lumaApiKey,
+                        luma_calendar_id: lumaCalendarId
+                    })
+                });
+
+                const calendarInfo = await response.json();
+
+                // Prepare confirmation details
+                const hostName = document.getElementById('hostName').value.trim();
+                const hostEmail = document.getElementById('hostEmail').value.trim();
+
+                const confirmationItems = [
+                    { label: 'Calendar ID', value: calendarInfo.calendar_id },
+                    { label: 'Calendar URL', value: calendarInfo.calendar_url },
+                    { label: 'Event Title', value: currentEventData.title },
+                    { label: 'Host', value: `${hostName} (${hostEmail})` },
+                    { label: 'Date & Time', value: currentEventData.start_time },
+                    { label: 'Location', value: currentEventData.location },
+                    { label: 'Ticket Link', value: currentEventData.ticket_link || 'None' }
+                ];
+
+                const confirmationDetails = document.getElementById('confirmationDetails');
+                confirmationDetails.innerHTML = confirmationItems.map(item => `
+                    <div class="confirmation-item">
+                        <span class="confirmation-label">${item.label}:</span>
+                        <span class="confirmation-value">${item.value}</span>
+                    </div>
+                `).join('');
+
+                document.getElementById('confirmationModal').style.display = 'block';
+            } catch (error) {
+                showAlert('Error getting calendar info: ' + error.message, 'error');
+            }
+        }
+
+        function hideConfirmationModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+            document.getElementById('loadingIndicator').style.display = 'none';
+        }
+
+        async function confirmImport() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            loadingIndicator.style.display = 'block';
+
+            const lumaApiKey = document.getElementById('lumaApiKey').value.trim();
+            const lumaCalendarId = document.getElementById('lumaCalendarId').value.trim();
+            const hostName = document.getElementById('hostName').value.trim();
+            const hostEmail = document.getElementById('hostEmail').value.trim();
+            const hostBio = document.getElementById('hostBio').value.trim();
+
+            const hosts = [{
+                name: hostName,
+                email: hostEmail,
+                bio: hostBio
+            }];
+
+            try {
+                const response = await fetch('/facebook/import', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        event_data: currentEventData,
+                        luma_api_key: lumaApiKey,
+                        luma_calendar_id: lumaCalendarId,
+                        hosts: hosts
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showAlert('Event successfully imported to Lu.ma!', 'success');
+                    hideConfirmationModal();
+                } else {
+                    showAlert(result.error || 'Failed to import event', 'error');
+                }
+            } catch (error) {
+                showAlert('Network error: ' + error.message, 'error');
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('eventDetails').style.display = 'none';
+            document.getElementById('facebookUrl').value = '';
+            currentEventData = null;
+            clearAlerts();
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertDiv);
+
+            // Auto-hide success alerts after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 5000);
+            }
+        }
+
+        function clearAlerts() {
+            document.getElementById('alertContainer').innerHTML = '';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('confirmationModal');
+            if (event.target === modal) {
+                hideConfirmationModal();
+            }
+        }
+    </script>
+</body>
+</html>
+
