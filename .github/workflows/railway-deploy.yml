@@ -22,5 +22,5 @@ jobs:
         working-directory: ./backend
         run: railway up
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           PROJECT_ID: 8befa0be-3251-45a9-8e52-f41477696a6c
