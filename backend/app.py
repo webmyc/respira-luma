@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'asdf#FGSgvasgf$5$WGT')
 
 # Enable CORS for all routes with proper configuration
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "https://respira-luma-public.vercel.app"}})
 
 # Register blueprint with API prefix
 app.register_blueprint(facebook_bp, url_prefix='/api')
