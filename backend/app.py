@@ -35,3 +35,11 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
 
 
+
+
+@app.before_request
+def before_request():
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
+
+
