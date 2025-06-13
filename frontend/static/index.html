@@ -13,7 +13,9 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: url('background.png') no-repeat center center fixed;
+            background-size: cover;
+            background-color: #1a1a2e;
             min-height: 100vh;
             color: #ffffff;
             overflow-x: hidden;
@@ -529,6 +531,7 @@
         </div>
     </div>
 
+    <script src="config.js"></script>
     <script>
         let currentEventData = null;
 
@@ -550,8 +553,8 @@
             processBtn.disabled = true;
             processBtn.textContent = 'Processing...';
 
-            try {
-                const response = await fetch('/facebook/scrape', {
+            try {                const response = await fetch(API_BASE_URL + 
+'/facebook/scrape', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -635,7 +638,8 @@
             }
 
             try {
-                const response = await fetch('/facebook/calendar_info', {
+                const response = await fetch(API_BASE_URL + 
+'/facebook/calendar_info', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -764,4 +768,7 @@
     </script>
 </body>
 </html>
+
+
+<!-- Trigger redeployment -->
 
