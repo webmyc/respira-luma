@@ -1,7 +1,7 @@
 import os
 import sys
 from flask import Flask, jsonify, request
-from flask_cors import CORS
+
 
 # Import routes directly from local directory
 from routes.facebook import facebook_bp
@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'asdf#FGSgvasgf$5$WGT')
 
 # Enable CORS for all routes with proper configuration
-CORS(app, resources={r"/*": {"origins": "*"}})
+
 
 # Register blueprint with API prefix
 app.register_blueprint(facebook_bp, url_prefix='/api')
@@ -41,5 +41,15 @@ if __name__ == '__main__':
 def before_request():
     if request.method == "OPTIONS":
         return jsonify({"status": "ok"}), 200
+
+
+
+
+@app.after_request
+def after_request(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
+    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+    return response
 
 
