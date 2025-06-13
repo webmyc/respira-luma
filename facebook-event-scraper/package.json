@@ -1,0 +1,54 @@
+{
+  "name": "facebook-event-scraper",
+  "version": "0.2.2",
+  "description": "A slim module for scraping Facebook event data in milliseconds.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "prepare": "husky install",
+    "test": "jest",
+    "test:unit": "npm test -- --testPathIgnorePatterns src/tests/e2e.test.ts",
+    "test:e2e": "npm test -- --testPathPattern src/tests/e2e.test.ts",
+    "test:update-snapshot": "npm run test:e2e -- --updateSnapshot",
+    "prepack": "npm run test:unit && rm -rf dist && npm run build",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/francescov1/facebook-event-scraper.git"
+  },
+  "keywords": [
+    "facebook",
+    "event",
+    "scrape",
+    "scraper",
+    "webscraper",
+    "axios",
+    "slim",
+    "fast",
+    "events",
+    "facebook-events"
+  ],
+  "license": "MIT",
+  "author": "Francesco Virga @francescov1",
+  "bugs": {
+    "url": "https://github.com/francescov1/facebook-event-scraper/issues"
+  },
+  "files": [
+    "/dist"
+  ],
+  "homepage": "https://github.com/francescov1/facebook-event-scraper#readme",
+  "dependencies": {
+    "axios": "^1.3.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "bounce-in-style": "^0.0.40",
+    "husky": "^8.0.3",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.3"
+  }
+}

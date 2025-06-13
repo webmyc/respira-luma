@@ -1,0 +1,22 @@
+{
+  "name": "facebook-luma-event-importer",
+  "version": "1.0.0",
+  "description": "A simple Node.js app to import Facebook event data to Lu.ma calendar.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "facebook",
+    "luma",
+    "event",
+    "importer",
+    "nodejs"
+  ],
+  "author": "Manus",
+  "license": "MIT",
+  "dependencies": {
+    "facebook-event-scraper": "^0.2.2",
+    "node-fetch": "^2.7.0"
+  }
+}

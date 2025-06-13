@@ -1,0 +1,12 @@
+{
+  "luma_api_key": "secret-iU77ViGYOnsjkftWCgYU8AAqY",
+  "luma_calendar_id": "cal-kHPWgivduMfoD1j",
+  "hosts": [
+    {
+      "name": "RespiraLuma",
+      "email": "mihai@respira.cafe",
+      "bio": "Facebook Event importer to Lu.ma - created by <a href=\"https://respira.cafe\">Respira</a>"
+    }
+  ]
+}
+
