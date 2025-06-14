@@ -58,6 +58,8 @@ This project provides a web application to import Facebook events into Lu.ma cal
 
 Feel free to fork this repository and contribute. Pull requests are welcome.
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/webmyc/respira-luma?utm_source=oss&utm_medium=github&utm_campaign=webmyc%2Frespira-luma&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 ## License
 
 This project is licensed under the MIT License.
